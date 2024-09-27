@@ -1,0 +1,33 @@
+{
+  "name": "fastify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startDev": "nodemon ./dist/index.js",
+    "start": "pm2 start ./dist/index.js --watch && pm2 logs",
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/env": "^4.3.0",
+    "@nestjs/common": "^10.4.4",
+    "async": "^3.2.5",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.27.0",
+    "ioredis": "^5.4.1",
+    "node-cron": "^3.0.3",
+    "pm2": "^5.4.2",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/node-cron": "^3.0.11",
+    "typescript": "^5.4.5"
+  }
+}
