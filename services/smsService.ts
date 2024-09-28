@@ -40,41 +40,77 @@ export default class SmsService {
     if (!receivedSmsList[0])
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
 
-    async.mapLimit(receivedSmsList, 2, async (each: any, cb: Function) => {
+    await async.eachLimit(receivedSmsList, 2, async (each: any, cb: Function) => {
       const text = JSON.parse(each?.body);
 
-      console.log(123123123, each)
+      console.log(123123123123, each)
 
-      // try {
-      //   const result = await axios({
-      //     method: 'get',
-      //     url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
-      //     validateStatus: null
-      //   });
-      //   const data = result?.data
+      axios({
+        method: 'get',
+        url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
+        validateStatus: null
+      }).then(result => {
+        const data = result?.data
 
-      //   if (!data.entries)
-      //     throw new NotFoundException(data.return)
-
-      //   if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-      //     // API from sameh that update sms status to 2
-      //     await axios({
-      //       method: 'put',
-      //       url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-      //       data: { smsId: each.id },
-      //       headers: {
-      //         Authorization: `Bearer ${samehAccessToken}`,
-      //         "Content-Type": "application/json"
-      //       }
-      //     });
-      //   }
-      // } catch (err) {
-      //   console.error(err)
-      //   throw new InternalServerErrorException(err)
-      // }
+        if (!data.entries)
+          throw new NotFoundException(data.return)
+  
+        if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
+          // API from sameh that update sms status to 2
+          axios({
+            method: 'put',
+            url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
+            data: { smsId: each.id },
+            headers: {
+              Authorization: `Bearer ${samehAccessToken}`,
+              "Content-Type": "application/json"
+            }
+          });
+        }
+      }).catch(err => {
+        console.error(err)
+        throw new InternalServerErrorException(err)
+      })
 
       cb(null)
     })
+
+
+
+
+    // async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
+    //   const text = JSON.parse(each?.body);
+
+    //   try {
+    //     const result = await axios({
+    //       method: 'get',
+    //       url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
+    //       validateStatus: null
+    //     });
+    //     const data = result?.data
+
+    //     if (!data.entries)
+    //       throw new NotFoundException(data.return)
+
+    //     if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
+    //       // API from sameh that update sms status to 2
+    //       await axios({
+    //         method: 'put',
+    //         url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
+    //         data: { smsId: each.id },
+    //         headers: {
+    //           Authorization: `Bearer ${samehAccessToken}`,
+    //           "Content-Type": "application/json"
+    //         }
+    //       });
+    //     }
+    //   } catch (err) {
+    //     console.error(err)
+    //     throw new InternalServerErrorException(err)
+    //   }
+
+    //   cb(null)
+    // })
 
     return { message: 'پیامک ها با موفقیت ارسال شدند' };
   }
