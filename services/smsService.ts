@@ -75,7 +75,7 @@ export default class SmsService {
       //   throw new InternalServerErrorException(err)
       // }
 
-      cb(null)
+      cb()
     }, 2)
     await q.drain()
 
