@@ -40,7 +40,7 @@ export default class SmsService {
     if (!receivedSmsList[0])
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
 
-    const q = async.queue((task: any, cb: Function) => {
+    const q = async.queue(async function (task: any, cb: Function) {
 
       console.log(11111111, task)
       // const text = JSON.parse(task.each?.body);
