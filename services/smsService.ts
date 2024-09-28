@@ -84,7 +84,7 @@ export default class SmsService {
       throw new InternalServerErrorException(err)
     });
 
-    q.push(receivedSmsList, (err) => {
+    q.push([{ name: 'baz' }, { name: 'bay' }, { name: 'bax' }], (err) => {
       console.log('Inejecting receivedSmsList successfully done');
     });
 
