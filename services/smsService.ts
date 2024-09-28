@@ -42,8 +42,6 @@ export default class SmsService {
     for (const each of receivedSmsList) {
       const text = JSON.parse(each?.body);
 
-      console.log(4444444, `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`)
-
       try {
         const result = await axios({
           method: 'get',
