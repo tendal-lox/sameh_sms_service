@@ -40,12 +40,10 @@ export default class SmsService {
     if (!receivedSmsList[0])
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
 
-    const q = await async.queue(async function (task: any, cb: Function) {
+    async.mapLimit(receivedSmsList, 2, async (each: any, cb: Function) => {
+      const text = JSON.parse(each?.body);
 
-      console.log(11111111, task)
-      // const text = JSON.parse(task.each?.body);
-
-      // console.log(123123123)
+      console.log(123123123, each)
 
       // try {
       //   const result = await axios({
@@ -75,54 +73,8 @@ export default class SmsService {
       //   throw new InternalServerErrorException(err)
       // }
 
-      cb()
-    }, 2)
-    await q.drain()
-
-    q.error((err, task) => {
-      console.error(err, task);
-      throw new InternalServerErrorException(err)
-    });
-
-    q.push(receivedSmsList, (err) => {
-      console.log('Inejecting receivedSmsList successfully done');
-    });
-
-    // async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
-    //   const text = JSON.parse(each?.body);
-
-    //   console.log(123123123)
-
-    //   try {
-    //     const result = await axios({
-    //       method: 'get',
-    //       url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
-    //       validateStatus: null
-    //     });
-    //     const data = result?.data
-
-    //     if (!data.entries)
-    //       throw new NotFoundException(data.return)
-
-    //     if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-    //       // API from sameh that update sms status to 2
-    //       await axios({
-    //         method: 'put',
-    //         url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-    //         data: { smsId: each.id },
-    //         headers: {
-    //           Authorization: `Bearer ${samehAccessToken}`,
-    //           "Content-Type": "application/json"
-    //         }
-    //       });
-    //     }
-    //   } catch (err) {
-    //     console.error(err)
-    //     throw new InternalServerErrorException(err)
-    //   }
-
-    //   cb(null)
-    // })
+      cb(null)
+    })
 
     return { message: 'پیامک ها با موفقیت ارسال شدند' };
   }
