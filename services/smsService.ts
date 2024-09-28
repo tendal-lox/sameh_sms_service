@@ -40,7 +40,7 @@ export default class SmsService {
     if (!receivedSmsList[0])
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
 
-    const q = async.queue(function (task: any, cb: Function) {
+    const q = await async.queue(async function (task: any, cb: Function) {
 
       console.log(11111111, task)
       // const text = JSON.parse(task.each?.body);
@@ -84,7 +84,7 @@ export default class SmsService {
       throw new InternalServerErrorException(err)
     });
 
-    q.push([{ name: 'baz' }, { name: 'bay' }, { name: 'bax' }], (err) => {
+    q.push(receivedSmsList, (err) => {
       console.log('Inejecting receivedSmsList successfully done');
     });
 
