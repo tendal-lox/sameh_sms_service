@@ -72,7 +72,9 @@ export default class SmsService {
         throw new InternalServerErrorException(err)
       })
 
-      cb(null)
+      setTimeout(() => {
+        cb(null)
+      }, 5000);
     })
 
 
