@@ -40,10 +40,10 @@ export default class SmsService {
     if (!receivedSmsList[0])
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
 
-    async.mapLimit(receivedSmsList, 1, async (each: any) => {
+    async.mapLimit(receivedSmsList, 1, async (each: any, cb) => {
       const text = JSON.parse(each?.body);
 
-      console.log(12312312313131313123)
+      console.log(123123123123123132)
 
       try {
         const result = await axios({
@@ -72,6 +72,8 @@ export default class SmsService {
         console.error(err)
         throw new InternalServerErrorException(err)
       }
+
+      cb(null)
     })
 
     // for (const each of receivedSmsList) {
