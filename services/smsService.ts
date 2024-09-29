@@ -37,12 +37,16 @@ export default class SmsService {
   smsSender = async (req: any, reply: any) => {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
 
-    if (!receivedSmsList[0])
+    if (!receivedSmsList[0]) {
+      console.log('لیستی جهت ارسال پیامک وجود ندارد')
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
+    }
 
     try {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
+
+        console.log(1111111111, each)
   
         axios({
           method: 'get',
