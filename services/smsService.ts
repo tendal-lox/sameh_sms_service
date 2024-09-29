@@ -42,6 +42,8 @@ export default class SmsService {
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
     }
 
+    throw new NotFoundException('خطا در دریافت توکن')
+
     try {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
