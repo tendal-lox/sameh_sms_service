@@ -42,13 +42,9 @@ export default class SmsService {
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
     }
 
-    throw new NotFoundException('خطا در دریافت توکن')
-
     try {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
-
-        console.log(1111111111, each)
   
         axios({
           method: 'get',
@@ -79,6 +75,7 @@ export default class SmsService {
   
         cb(null)
       })
+      console.log('پیامک ها با موفقیت ارسال شدند')
     } catch (err) {
       console.error(err)
       throw new InternalServerErrorException(err)
