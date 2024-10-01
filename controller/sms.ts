@@ -12,7 +12,7 @@ export default function (fastify: any, opts: any, done: any) {
 
     console.log(111111111111)
     const changeCronSchedule = true
-    changeCronSchedule ? cronSchedule = `*/10 * * * * *` : null
+    changeCronSchedule ? cronSchedule = `*/10 * * * * *` : `*/2 * * * *`
   });
   
   fastify.get('/auth', samehSmsAuth);
