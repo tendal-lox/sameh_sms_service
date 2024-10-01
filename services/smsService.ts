@@ -54,9 +54,8 @@ export default class SmsService {
         }).then(result => {
           const data = result?.data
 
-          data.return.status = 418
-          if (data.return.status === 418)
-            changeCronSchedule = true
+          // if (data.return.status === 418)
+          //   changeCronSchedule = true
 
           if (!data.entries)
             throw new NotFoundException(data.return)
@@ -86,6 +85,6 @@ export default class SmsService {
       throw new InternalServerErrorException(err)
     }
 
-    return {changeCronSchedule, message: 'پیامک ها با موفقیت ارسال شدند' };
+    return {message: 'پیامک ها با موفقیت ارسال شدند'};
   }
 };
