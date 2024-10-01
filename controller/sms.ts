@@ -8,9 +8,11 @@ export default function (fastify: any, opts: any, done: any) {
   let cronSchedule = `*/2 * * * *`
 
   cron.schedule(cronSchedule, async () => {
-    const {changeCronSchedule} = await services.smsSender(fastify.req, fastify.reply)
+    // const {changeCronSchedule} = await services.smsSender(fastify.req, fastify.reply)
 
-    changeCronSchedule ? cronSchedule = `*/3 * * * *` : null
+    console.log(111111111111)
+    const changeCronSchedule = true
+    changeCronSchedule ? cronSchedule = `*/10 * * * * *` : null
   });
   
   fastify.get('/auth', samehSmsAuth);
