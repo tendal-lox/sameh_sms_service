@@ -5,8 +5,12 @@ import cron from 'node-cron'
 const services = new SmsService()
 
 export default function (fastify: any, opts: any, done: any) {
-  cron.schedule('*/2 * * * *', async () => {
-    return await services.smsSender(fastify.req, fastify.reply)
+  let cronSchedule = `*/2 * * * *`
+
+  cron.schedule(cronSchedule, async () => {
+    const {changeCronSchedule} = await services.smsSender(fastify.req, fastify.reply)
+
+    changeCronSchedule ? cronSchedule = `*/3 * * * *` : null
   });
   
   fastify.get('/auth', samehSmsAuth);

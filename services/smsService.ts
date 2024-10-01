@@ -36,6 +36,7 @@ export default class SmsService {
 
   smsSender = async (req: any, reply: any) => {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
+    let changeCronSchedule = false
 
     if (!receivedSmsList[0]) {
       console.log('لیستی جهت ارسال پیامک وجود ندارد')
@@ -52,7 +53,11 @@ export default class SmsService {
           validateStatus: null
         }).then(result => {
           const data = result?.data
-  
+
+          data.return.status = 418
+          if (data.return.status === 418)
+            changeCronSchedule = true
+
           if (!data.entries)
             throw new NotFoundException(data.return)
     
@@ -81,6 +86,6 @@ export default class SmsService {
       throw new InternalServerErrorException(err)
     }
 
-    return { message: 'پیامک ها با موفقیت ارسال شدند' };
+    return {changeCronSchedule, message: 'پیامک ها با موفقیت ارسال شدند' };
   }
 };
