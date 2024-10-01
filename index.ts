@@ -1,5 +1,5 @@
 import Fastify from 'fastify'
-import sms from './routes/sms.js'
+import sms from './controller/sms.js'
 import fastifyEnv from '@fastify/env'
 import { HttpException } from '@nestjs/common';
 import RedisService from './infrastructure/database/redisSetup.js'
