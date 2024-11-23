@@ -49,6 +49,8 @@ export default class SmsService {
       await async.eachLimit(receivedSmsList, 1, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
+        console.log(3333333333, receivedSmsList)
+
         axios({
           method: 'get',
           url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
