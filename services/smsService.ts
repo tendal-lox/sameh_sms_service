@@ -38,18 +38,14 @@ export default class SmsService {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
     let changeCronSchedule = false
 
-    console.log(11111111111, receivedSmsList)
-
     if (!receivedSmsList[0]) {
       console.log('لیستی جهت ارسال پیامک وجود ندارد')
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
     }
 
     try {
-      await async.eachLimit(receivedSmsList, 2, async (each: any, cb: Function) => {
+      await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
-
-        console.log(3333333333, each)
 
         axios({
           method: 'get',
@@ -57,8 +53,6 @@ export default class SmsService {
           validateStatus: null
         }).then(result => {
           const data = result?.data
-
-          console.log(7777777777777, result?.data)
 
           // if (data.return.status === 418)
           //   changeCronSchedule = true
