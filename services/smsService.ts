@@ -54,6 +54,8 @@ export default class SmsService {
         }).then(result => {
           const data = result?.data
 
+          console.log(result)
+
           // if (data.return.status === 418)
           //   changeCronSchedule = true
 
