@@ -38,6 +38,8 @@ export default class SmsService {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
     let changeCronSchedule = false
 
+    console.log(11111111111, receivedSmsList)
+
     if (!receivedSmsList[0]) {
       console.log('لیستی جهت ارسال پیامک وجود ندارد')
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
