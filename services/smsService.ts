@@ -49,7 +49,7 @@ export default class SmsService {
       await async.eachLimit(receivedSmsList, 1, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
-        console.log(3333333333, receivedSmsList)
+        console.log(3333333333, each)
 
         axios({
           method: 'get',
@@ -78,12 +78,12 @@ export default class SmsService {
               }
             });
           }
-
-          cb()
         }).catch(err => {
           console.error(err)
           throw new InternalServerErrorException(err)
         })
+
+        cb()
       })
 
       console.log('پیامک ها با موفقیت ارسال شدند')
