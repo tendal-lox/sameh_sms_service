@@ -6,8 +6,7 @@ const services = new SmsService()
 
 export default function (fastify: any, opts: any, done: any) {
   cron.schedule(`*/6 * * * * *`, async () => {
-    console.log(123123123123)
-    // await services.smsSender(fastify.req, fastify.reply)
+    await services.smsSender(fastify.req, fastify.reply)
   });
   
   fastify.get('/auth', samehSmsAuth);

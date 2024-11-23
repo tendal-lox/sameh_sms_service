@@ -46,9 +46,9 @@ export default class SmsService {
     }
 
     try {
-      await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
+      await async.eachLimit(receivedSmsList, 1, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
-  
+
         axios({
           method: 'get',
           url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
@@ -63,7 +63,7 @@ export default class SmsService {
 
           if (!data.entries)
             throw new NotFoundException(data.return)
-    
+
           if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
             // API from sameh that update sms status to 2
             axios({
@@ -76,13 +76,14 @@ export default class SmsService {
               }
             });
           }
+
+          cb()
         }).catch(err => {
           console.error(err)
           throw new InternalServerErrorException(err)
         })
-  
-        cb(null)
       })
+
       console.log('پیامک ها با موفقیت ارسال شدند')
     } catch (err) {
       console.error(err)
