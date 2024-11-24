@@ -67,10 +67,10 @@ export default class SmsService {
           const data = result?.data
 
           if (!data.entries)
-            cb(null, {id: +each.id, status: 3, result: (data?.return?.message).toString()})
+            return {id: +each.id, status: 3, result: (data?.return?.message).toString()}
 
           if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-            cb(null, {id: +each.id, status: 2, result: (data.entries[0]?.messageid).toString()})
+            return {id: +each.id, status: 2, result: (data.entries[0]?.messageid).toString()}
           }
         }).catch(err => {
           console.error(err)
