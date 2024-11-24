@@ -34,27 +34,16 @@ export default class SmsService {
     }
   }
 
-  bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
-    const cargo = async.cargo((tasks, cb) => {
-      console.log(4444444, tasks)
-      new Promise<void>((res) => {
-        return tasks
-      }).then(res => {
-        console.log(888888888, tasks)
-        cb()
-      })
-      // await axios({
-      //   method: 'put',
-      //   url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-      //   data: { smsId: tasks },
-      //   headers: {
-      //     Authorization: `Bearer ${samehAccessToken}`,
-      //     "Content-Type": "application/json"
-      //   }
-      // })
-    }, 10)
-
-    await cargo.push(id)
+  bulkUpdateSmsStatus = async ({ids, samehAccessToken}: {ids: any, samehAccessToken: string}) => {
+    await axios({
+      method: 'put',
+      url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
+      data: { smsId: ids },
+      headers: {
+        Authorization: `Bearer ${samehAccessToken}`,
+        "Content-Type": "application/json"
+      }
+    })
   }
 
   smsSender = async (req: any, reply: any) => {
@@ -66,11 +55,12 @@ export default class SmsService {
     }
 
     try {
-      await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
+      const result = await async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
-        await this.bulkUpdateSmsStatus({id: +each.id, samehAccessToken})
-        cb()
+        const a = await Promise.resolve(each)
+
+        cb(null, a)
         // axios({
         //   method: 'get',
         //   url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
@@ -95,6 +85,8 @@ export default class SmsService {
         //   throw new InternalServerErrorException(err)
         // })
       })
+
+      console.log(1111111111, result)
 
       console.log('پیامک ها با موفقیت ارسال شدند')
     } catch (err) {
