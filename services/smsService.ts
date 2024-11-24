@@ -34,6 +34,25 @@ export default class SmsService {
     }
   }
 
+  bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
+    const cargo = async.cargo(async (tasks) => {
+      console.log(4444444, tasks)
+      await Promise.resolve(tasks)
+      // await axios({
+      //   method: 'put',
+      //   url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
+      //   data: { smsId: tasks },
+      //   headers: {
+      //     Authorization: `Bearer ${samehAccessToken}`,
+      //     "Content-Type": "application/json"
+      //   }
+      // })
+      return
+    }, 10)
+
+    await cargo.push(id)
+  }
+
   smsSender = async (req: any, reply: any) => {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
 
@@ -46,38 +65,31 @@ export default class SmsService {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
-        axios({
-          method: 'get',
-          url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
-          validateStatus: null
-        }).then(result => {
-          const data = result?.data
+        await this.bulkUpdateSmsStatus({id: +each.id, samehAccessToken})
 
-          // if (data.return.status === 418)
-
-          console.log(111111111, data)
-
-          if (!data.entries)
-            throw new NotFoundException(data.return)
-
-          if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-            // API from sameh that update sms status to 2
-            axios({
-              method: 'put',
-              url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-              data: { smsId: each.id },
-              headers: {
-                Authorization: `Bearer ${samehAccessToken}`,
-                "Content-Type": "application/json"
-              }
-            });
-          }
-
-          cb()
-        }).catch(err => {
-          console.error(err)
-          throw new InternalServerErrorException(err)
-        })
+        // axios({
+        //   method: 'get',
+        //   url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
+        //   validateStatus: null
+        // }).then(async result => {
+        //   const data = result?.data
+        //
+        //   // if (data.return.status === 418)
+        //
+        //   console.log(111111111, data)
+        //
+        //   if (!data.entries)
+        //     throw new NotFoundException(data.return)
+        //
+        //   if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
+        //     await this.updateSmsStatus({id: +each.id, samehAccessToken})
+        //   }
+        //
+        //   cb()
+        // }).catch(err => {
+        //   console.error(err)
+        //   throw new InternalServerErrorException(err)
+        // })
       })
 
       console.log('پیامک ها با موفقیت ارسال شدند')
