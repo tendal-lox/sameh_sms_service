@@ -37,10 +37,12 @@ export default class SmsService {
   bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
     const cargo = async.cargo(async (tasks, cb) => {
       console.log(4444444, tasks)
-      await new Promise<void>((res) => {
+      const data = await new Promise<void>((res) => {
         console.log('hellllllllllllloooooooooooo')
-        res()
+        // @ts-ignore
+        res(tasks)
       })
+      console.log(888888888888, data)
       // await axios({
       //   method: 'put',
       //   url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
@@ -69,7 +71,7 @@ export default class SmsService {
         const text = JSON.parse(each?.body);
 
         await this.bulkUpdateSmsStatus({id: +each.id, samehAccessToken})
-
+        cb()
         // axios({
         //   method: 'get',
         //   url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
