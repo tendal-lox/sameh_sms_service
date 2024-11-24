@@ -36,14 +36,11 @@ export default class SmsService {
 
   smsSender = async (req: any, reply: any) => {
     const { receivedSmsList, samehAccessToken } = await this.smsListAccess(req, reply);
-    let changeCronSchedule = false
 
     if (!receivedSmsList[0]) {
       console.log('لیستی جهت ارسال پیامک وجود ندارد')
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
     }
-
-    console.log(33333333, receivedSmsList)
 
     try {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
@@ -57,7 +54,8 @@ export default class SmsService {
           const data = result?.data
 
           // if (data.return.status === 418)
-          //   changeCronSchedule = true
+
+          console.log(111111111, data)
 
           if (!data.entries)
             throw new NotFoundException(data.return)
