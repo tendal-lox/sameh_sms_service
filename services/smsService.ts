@@ -35,7 +35,7 @@ export default class SmsService {
   }
 
   bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
-    const cargo = async.cargo(async (tasks) => {
+    const cargo = async.cargo(async (tasks, cb) => {
       console.log(4444444, tasks)
       await new Promise<void>((res) => {
         console.log('hellllllllllllloooooooooooo')
@@ -50,7 +50,7 @@ export default class SmsService {
       //     "Content-Type": "application/json"
       //   }
       // })
-      return
+      cb()
     }, 10)
 
     await cargo.push(id)
