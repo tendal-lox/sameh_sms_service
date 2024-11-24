@@ -35,7 +35,7 @@ export default class SmsService {
   }
 
   bulkUpdateSmsStatus = async ({results, samehAccessToken}: {results: any, samehAccessToken: string}) => {
-    const res = await axios({
+    await axios({
       method: 'put',
       url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
       data:  { results },
@@ -45,8 +45,6 @@ export default class SmsService {
       },
       validateStatus: null,
     })
-
-    console.log(res?.data?.error)
   }
 
   smsSender = async (req: any, reply: any) => {
