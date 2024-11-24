@@ -77,7 +77,7 @@ export default class SmsService {
         })
       })
 
-      // await this.bulkUpdateSmsStatus({ids: results, isError: false, samehAccessToken})
+      await this.bulkUpdateSmsStatus({ids: results, isError: false, samehAccessToken})
 
       console.log(1111111111, results)
 
