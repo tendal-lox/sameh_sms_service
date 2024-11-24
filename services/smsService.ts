@@ -77,7 +77,7 @@ export default class SmsService {
         })
       })
 
-      await this.bulkUpdateSmsStatus({results, samehAccessToken})
+      // await this.bulkUpdateSmsStatus({results, samehAccessToken})
 
       console.log(1111111111, results)
 
