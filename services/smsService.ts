@@ -34,11 +34,11 @@ export default class SmsService {
     }
   }
 
-  bulkUpdateSmsStatus = async ({ids: results, isError, samehAccessToken}: {ids: any, isError: boolean, samehAccessToken: string}) => {
+  bulkUpdateSmsStatus = async ({results, samehAccessToken}: {results: any, samehAccessToken: string}) => {
     await axios({
       method: 'put',
       url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-      data:  { results, ...(isError&&{error: isError}) },
+      data:  { results },
       headers: {
         Authorization: `Bearer ${samehAccessToken}`,
         "Content-Type": "application/json"
@@ -66,10 +66,10 @@ export default class SmsService {
           const data = result?.data
 
           if (!data.entries)
-            cb([+each.id, data?.return?.message])
+            cb(null, {id: +each.id, status: 3, result: data?.return?.message})
 
           if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-            cb(null, [+each.id, data.entries[0]?.messageid])
+            cb(null, {id: +each.id, status: 2, result: data.entries[0]?.messageid})
           }
         }).catch(err => {
           console.error(err)
@@ -77,7 +77,7 @@ export default class SmsService {
         })
       })
 
-      await this.bulkUpdateSmsStatus({ids: results, isError: false, samehAccessToken})
+      await this.bulkUpdateSmsStatus({results, samehAccessToken})
 
       console.log(1111111111, results)
 
