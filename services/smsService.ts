@@ -34,11 +34,11 @@ export default class SmsService {
     }
   }
 
-  bulkUpdateSmsStatus = async ({ids, samehAccessToken}: {ids: any, samehAccessToken: string}) => {
+  bulkUpdateSmsStatus = async ({ids, isError, samehAccessToken}: {ids: any, isError: boolean, samehAccessToken: string}) => {
     await axios({
       method: 'put',
       url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
-      data: { smsId: ids },
+      data: isError ? { smsId: ids, error: true } : { smsId: ids },
       headers: {
         Authorization: `Bearer ${samehAccessToken}`,
         "Content-Type": "application/json"
@@ -55,7 +55,7 @@ export default class SmsService {
     }
 
     try {
-      const result = await async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
+      const results = await async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
         axios({
@@ -66,18 +66,20 @@ export default class SmsService {
           const data = result?.data
 
           if (!data.entries)
-            cb(data?.return?.message)
+            cb([+each.id, data?.return?.message])
 
           if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-            cb(null, data.entries[0]?.messageid)
+            cb(null, [+each.id, data.entries[0]?.messageid])
           }
         }).catch(err => {
           console.error(err)
           throw new InternalServerErrorException(err)
         })
       })
-      // await this.bulkUpdateSmsStatus({ids: +each.id, samehAccessToken})
-      console.log(1111111111, result)
+
+      // await this.bulkUpdateSmsStatus({ids: results, isError: false, samehAccessToken})
+
+      console.log(1111111111, results)
 
       console.log('پیامک ها با موفقیت ارسال شدند')
     } catch (err) {
