@@ -37,7 +37,10 @@ export default class SmsService {
   bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
     const cargo = async.cargo(async (tasks) => {
       console.log(4444444, tasks)
-      await Promise.resolve(tasks)
+      await new Promise<void>((res) => {
+        console.log('hellllllllllllloooooooooooo')
+        res()
+      })
       // await axios({
       //   method: 'put',
       //   url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
