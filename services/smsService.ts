@@ -35,14 +35,14 @@ export default class SmsService {
   }
 
   bulkUpdateSmsStatus = async ({id, samehAccessToken}: {id: number, samehAccessToken: string}) => {
-    const cargo = async.cargo(async (tasks, cb) => {
+    const cargo = async.cargo((tasks, cb) => {
       console.log(4444444, tasks)
-      const data = await new Promise<void>((res) => {
-        console.log('hellllllllllllloooooooooooo')
-        // @ts-ignore
-        res(tasks)
+      new Promise<void>((res) => {
+        return tasks
+      }).then(res => {
+        console.log(888888888, tasks)
+        cb()
       })
-      console.log(888888888888, data)
       // await axios({
       //   method: 'put',
       //   url: 'https://sameh.behdasht.gov.ir/api/v2/sms/updateSmsStatus',
@@ -52,7 +52,6 @@ export default class SmsService {
       //     "Content-Type": "application/json"
       //   }
       // })
-      cb()
     }, 10)
 
     await cargo.push(id)
