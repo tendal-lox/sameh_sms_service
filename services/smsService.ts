@@ -58,34 +58,25 @@ export default class SmsService {
       const result = await async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
-        const a = await Promise.resolve(each)
+        axios({
+          method: 'get',
+          url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
+          validateStatus: null
+        }).then(async result => {
+          const data = result?.data
 
-        cb(null, a)
-        // axios({
-        //   method: 'get',
-        //   url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
-        //   validateStatus: null
-        // }).then(async result => {
-        //   const data = result?.data
-        //
-        //   // if (data.return.status === 418)
-        //
-        //   console.log(111111111, data)
-        //
-        //   if (!data.entries)
-        //     throw new NotFoundException(data.return)
-        //
-        //   if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-        //     await this.updateSmsStatus({id: +each.id, samehAccessToken})
-        //   }
-        //
-        //   cb()
-        // }).catch(err => {
-        //   console.error(err)
-        //   throw new InternalServerErrorException(err)
-        // })
+          if (!data.entries)
+            cb(data?.return?.message)
+
+          if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
+            cb(null, data.entries[0]?.messageid)
+          }
+        }).catch(err => {
+          console.error(err)
+          throw new InternalServerErrorException(err)
+        })
       })
-
+      // await this.bulkUpdateSmsStatus({ids: +each.id, samehAccessToken})
       console.log(1111111111, result)
 
       console.log('پیامک ها با موفقیت ارسال شدند')
