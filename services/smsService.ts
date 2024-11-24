@@ -43,6 +43,8 @@ export default class SmsService {
       throw new NotFoundException('لیستی جهت ارسال پیامک وجود ندارد')
     }
 
+    console.log(33333333, receivedSmsList)
+
     try {
       await async.eachLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
