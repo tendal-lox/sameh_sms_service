@@ -5,7 +5,7 @@ import cron from 'node-cron'
 const services = new SmsService()
 
 export default function (fastify: any, opts: any, done: any) {
-  cron.schedule(`*/1 * * * *`, async () => {
+  cron.schedule(`*/20 * * * * *`, async () => {
     await services.smsSender(fastify.req, fastify.reply)
   });
   
