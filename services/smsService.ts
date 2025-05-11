@@ -66,8 +66,6 @@ export default class SmsService {
         }).then(async result => {
           const data = result?.data
 
-          console.log('$$$$$$$', data)
-
           if (!data.entries)
             cb(null, {id: +each.id, status: 3, result: (data?.return?.message).toString()})
 
@@ -82,7 +80,7 @@ export default class SmsService {
 
       await this.bulkUpdateSmsStatus({results, samehAccessToken})
 
-      console.log(1111111111, results)
+      console.log('Messages status', results)
 
       console.log('پیامک ها با موفقیت ارسال شدند')
     } catch (err) {
