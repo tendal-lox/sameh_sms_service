@@ -56,24 +56,17 @@ export default class SmsService {
     }
 
     try {
-      const results = await async.mapLimit(receivedSmsList, 10, async (each: any) => {
+      const results = await async.mapLimit(receivedSmsList, 10, async (each: any, cb: Function) => {
         const text = JSON.parse(each?.body);
 
-        await axios({
+        axios({
           method: 'get',
-          url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json`,
-          params: {
-            receptor: each.to,
-            token: text.token,
-            token10: text.token10,
-            token20: text.token20,
-            template: each.template
-          },
+          url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json?receptor=${each?.to}&token=${text.token}&token10=${text.token10}&token20=${text.token20}&template=${each.template}`,
           validateStatus: null
         }).then(async result => {
           const data = result?.data
 
-          console.log('$$$$$$', data)
+          console.log('$$$$$$$', data)
 
           if (!data.entries)
             return {id: +each.id, status: 3, result: (data?.return?.message).toString()}
@@ -86,53 +79,6 @@ export default class SmsService {
           throw new InternalServerErrorException(err)
         })
       })
-
-      // const results = await async.mapLimit(
-      //     receivedSmsList,
-      //     10,
-      //     async (each: any) => {
-      //       const text = JSON.parse(each.body);
-      //
-      //       try {
-      //         const { data } = await axios({
-      //           method: 'get',
-      //           url: `https://api.kavenegar.com/v1/${process.env.KAVENEGAR_API_KEY}/verify/lookup.json`,
-      //           params: {
-      //             receptor: each.to,
-      //             token: text.token,
-      //             token10: text.token10,
-      //             token20: text.token20,
-      //             template: each.template
-      //           },
-      //           validateStatus: null
-      //         });
-      //
-      //         console.log('$$$$$$$$', data.entries)
-      //
-      //         if (!data.entries) {
-      //           return {
-      //             id: +each.id,
-      //             status: 3,
-      //             result: data.return?.message?.toString() ?? ''
-      //           };
-      //         }
-      //
-      //         const entry = data.entries[0];
-      //         if (entry.status === 5 && entry.statustext === 'ارسال به مخابرات') {
-      //           return {
-      //             id: +each.id,
-      //             status: 2,
-      //             result: entry.messageid.toString()
-      //           };
-      //         }
-      //
-      //       } catch (err) {
-      //         console.error(err);
-      //         throw new InternalServerErrorException(err);
-      //       }
-      //     }
-      // );
-      console.log(44444444444, results)
 
       await this.bulkUpdateSmsStatus({results, samehAccessToken})
 
