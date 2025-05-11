@@ -123,6 +123,7 @@ export default class SmsService {
             }
           }
       );
+      console.log(44444444444, results)
 
       await this.bulkUpdateSmsStatus({results, samehAccessToken})
 
