@@ -72,7 +72,12 @@ export default class SmsService {
             cb(null, {id: +each.id, status: 3, result: (data?.return?.message).toString()})
 
           if (data.entries[0].status === 5 && data.entries[0].statustext === 'ارسال به مخابرات') {
-            cb(null, {id: +each.id, status: 2, result: (data.entries[0]?.messageid).toString()})
+            cb(null, {
+              id: +each.id,
+              status: 2,
+              result: (data.entries[0]?.messageid).toString(),
+              price: +data.entries[0]?.price
+            })
           }
         }).catch(err => {
           console.error(err)
