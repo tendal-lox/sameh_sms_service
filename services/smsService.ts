@@ -76,7 +76,7 @@ export default class SmsService {
               id: +each.id,
               status: 2,
               result: (data.entries[0]?.messageid).toString(),
-              price: +data.entries[0]?.price
+              price: +data.entries[0]?.cost
             })
           }
         }).catch(err => {
