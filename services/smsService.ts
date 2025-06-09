@@ -66,6 +66,8 @@ export default class SmsService {
         }).then(async result => {
           const data = result?.data
 
+          console.log(444444, data)
+
           if (!data.entries)
             cb(null, {id: +each.id, status: 3, result: (data?.return?.message).toString()})
 
